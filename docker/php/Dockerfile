@@ -1,0 +1,35 @@
+FROM php:8.4-fpm-alpine
+
+WORKDIR /var/www/html
+
+# System deps
+RUN apk add --no-cache \
+    bash \
+    git \
+    curl \
+    unzip \
+    icu-dev \
+    oniguruma-dev \
+    libzip-dev \
+    libpng-dev \
+    jpeg-dev \
+    freetype-dev \
+    postgresql-dev
+
+# PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install -j$(nproc) \
+    pdo_pgsql \
+    intl \
+    mbstring \
+    zip \
+    gd
+
+# Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Optional: create non-root user
+RUN addgroup -g 1000 www \
+ && adduser -G www -g www -s /bin/sh -D -u 1000 www
+
+USER www

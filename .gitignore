@@ -1,0 +1,50 @@
+########################################
+# Laravel
+########################################
+
+/laravel-app/vendor/
+/laravel-app/node_modules/
+/laravel-app/public/build/
+/laravel-app/public/hot
+
+/laravel-app/storage/*.key
+/laravel-app/storage/app/*
+/laravel-app/storage/framework/cache/*
+/laravel-app/storage/framework/sessions/*
+/laravel-app/storage/framework/testing/*
+/laravel-app/storage/framework/views/*
+/laravel-app/storage/logs/*
+
+!/laravel-app/storage/app/.gitignore
+!/laravel-app/storage/framework/.gitignore
+!/laravel-app/storage/logs/.gitignore
+
+/laravel-app/bootstrap/cache/*.php
+!/laravel-app/bootstrap/cache/.gitignore
+
+/laravel-app/.env
+/laravel-app/.env.*
+!/laravel-app/.env.example
+
+########################################
+# Docker
+########################################
+
+pgdata/
+redisdata/
+
+########################################
+# IDE
+########################################
+
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+########################################
+# OS
+########################################
+
+Thumbs.db

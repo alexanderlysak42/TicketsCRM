@@ -1,0 +1,59 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: tickets-crm-app
+    working_dir: /var/www
+    volumes:
+      - ./laravel-app:/var/www
+    depends_on:
+      - db
+      - redis
+    networks:
+      - tickets-crm
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: tickets-crm-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./laravel-app:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - tickets-crm
+
+  db:
+    image: postgres:16-alpine
+    container_name: tickets-crm-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: tickets-crm
+      POSTGRES_USER: tickets-crm
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - tickets-crm
+
+  redis:
+    image: redis:7-alpine
+    container_name: tickets-crm-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - tickets-crm
+
+volumes:
+  pg_data:
+  redis_data:
+
+networks:
+  tickets-crm:
+    driver: bridge
