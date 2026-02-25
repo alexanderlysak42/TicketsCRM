@@ -6,6 +6,7 @@
 
     <title>Feedback</title>
 
+
     <style>
         :root {
             --bg: #0b1220;
@@ -115,6 +116,7 @@
             text-align: center;
         }
     </style>
+
 </head>
 <body>
 <div class="wrap">
