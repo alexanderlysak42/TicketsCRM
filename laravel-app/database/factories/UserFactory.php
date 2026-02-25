@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserRolesEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -24,6 +25,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'role' => fake()->randomElement([UserRolesEnum::ADMIN, UserRolesEnum::MANAGER]),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
@@ -40,5 +42,21 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Indicate that the model's role should be admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn () => ['role' => UserRolesEnum::ADMIN]);
+    }
+
+    /**
+     * Indicate that the model's role should be manager.
+     */
+    public function manager(): static
+    {
+        return $this->state(fn () => ['role' => UserRolesEnum::MANAGER]);
     }
 }

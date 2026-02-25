@@ -129,6 +129,12 @@
       <path value="$PROJECT_DIR$/laravel-app/vendor/tijsverkoyen/css-to-inline-styles" />
       <path value="$PROJECT_DIR$/laravel-app/vendor/dragonmantank/cron-expression" />
       <path value="$PROJECT_DIR$/laravel-app/vendor/composer" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/maennchen/zipstream-php" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/image-optimizer" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/image" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/laravel-medialibrary" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/temporary-directory" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/laravel-package-tools" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">

@@ -50,6 +50,30 @@ services:
     networks:
       - tickets-crm
 
+#  adminer:
+#    image: adminer:4
+#    container_name: tickets-crm-adminer
+#    restart: unless-stopped
+#    depends_on:
+#      - db
+#    ports:
+#      - "8081:8080"
+#    networks:
+#      - tickets-crm
+
+  adminer:
+    image: adminer:latest
+    container_name: tickets-crm-adminer
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    environment:
+      ADMINER_DESIGN: pepa-linha-dark
+    networks:
+      - tickets-crm
+
 volumes:
   pg_data:
   redis_data:
