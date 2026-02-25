@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Enums\UserRolesEnum;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
@@ -27,10 +26,10 @@ interface UserRepositoryInterface
     public function findByEmail(string $email): ?User;
 
     /**
-     * @param UserRolesEnum $role
+     * @param string $roleName
      * @return Collection
      */
-    public function getByRole(UserRolesEnum $role): Collection;
+    public function getByRole(string $roleName): Collection;
 
     /**
      * @param array $data

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UsersSeeder extends Seeder
 {
@@ -12,11 +13,16 @@ class UsersSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->admin()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-        ]);
+        $admin = User::query()->firstOrCreate(
+            ['email' => 'admin@example.com'],
+            ['name' => 'Admin', 'password' => Hash::make('password')]
+        );
+        $admin->syncRoles(['admin']);
 
-        User::factory()->count(1)->manager()->create();
+        $manager = User::query()->firstOrCreate(
+            ['email' => 'manager@example.com'],
+            ['name' => 'Manager', 'password' => Hash::make('password')]
+        );
+        $manager->syncRoles(['manager']);
     }
 }

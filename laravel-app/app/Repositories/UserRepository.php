@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Enums\UserRolesEnum;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
@@ -36,13 +35,13 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * @param UserRolesEnum $role
+     * @param string $roleName
      * @return Collection
      */
-    public function getByRole(UserRolesEnum $role): Collection
+    public function getByRole(string $roleName): Collection
     {
         return User::query()
-            ->where('role', $role) // enum cast
+            ->role($roleName)
             ->orderBy('id')
             ->get();
     }
