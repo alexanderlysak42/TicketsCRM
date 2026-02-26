@@ -23,7 +23,6 @@ class TicketController extends Controller
      */
     public function store(StoreTicketRequest $request)
     {
-        // dd($request->all());
         $payload = $request->payload();
         $files = $request->file('files', []);
 

@@ -6,6 +6,9 @@ use App\Enums\TicketStatusesEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use App\Services\TicketService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class TicketAdminController extends Controller
@@ -14,6 +17,9 @@ class TicketAdminController extends Controller
         private readonly TicketService $ticketService,
     ) {}
 
+    /**
+     * @return Factory|View|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $filters = $request->only(['date_from', 'date_to', 'status', 'email', 'phone']);
@@ -36,6 +42,9 @@ class TicketAdminController extends Controller
         ]);
     }
 
+    /**
+     * @return Factory|View|\Illuminate\View\View
+     */
     public function show(Ticket $ticket)
     {
         $ticket->loadMissing(['customer']);
@@ -62,6 +71,9 @@ class TicketAdminController extends Controller
         ]);
     }
 
+    /**
+     * @return RedirectResponse
+     */
     public function updateStatus(Request $request, Ticket $ticket)
     {
         $validated = $request->validate([
@@ -71,7 +83,7 @@ class TicketAdminController extends Controller
         $ticket = match ($validated['status']) {
             TicketStatusesEnum::IN_PROGRESS->value => $this->ticketService->markInProgress($ticket),
             TicketStatusesEnum::DONE->value => $this->ticketService->markDone($ticket),
-            default => $ticket, // NEW можно оставить как есть, либо сделать метод resetToNew()
+            default => $ticket,
         };
 
         return redirect()
