@@ -1,0 +1,262 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Tickets API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/tickets": {
+            "post": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Create ticket",
+                "operationId": "2a7d76295d0f9f3e0e63adb2ed4a0596",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "subject": {
+                                        "type": "string"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    },
+                                    "files": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ticket created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Ticket"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/tickets/statistics": {
+            "get": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Ticket statistics",
+                "operationId": "d0b905803de0d5824273d266db389dc8",
+                "responses": {
+                    "200": {
+                        "description": "Statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/TicketStatistics"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Customer": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Иван Иванов"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+380991234567"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "ivan@example.com"
+                    }
+                },
+                "type": "object"
+            },
+            "Ticket": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "status": {
+                        "properties": {
+                            "code": {
+                                "type": "string",
+                                "example": "new"
+                            },
+                            "label": {
+                                "type": "string",
+                                "example": "Новая"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "subject": {
+                        "type": "string",
+                        "example": "Не работает форма"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Описание проблемы"
+                    },
+                    "customer": {
+                        "$ref": "#/components/schemas/Customer"
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 10
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "file.pdf"
+                                },
+                                "url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "size": {
+                                    "type": "integer",
+                                    "example": 204800
+                                },
+                                "mime_type": {
+                                    "type": "string",
+                                    "example": "application/pdf"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "answered_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "TicketStatistics": {
+                "properties": {
+                    "periods": {
+                        "properties": {
+                            "last_24h": {
+                                "properties": {
+                                    "label": {
+                                        "type": "string",
+                                        "example": "За сутки"
+                                    },
+                                    "count": {
+                                        "type": "integer",
+                                        "example": 12
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "last_7d": {
+                                "properties": {
+                                    "label": {
+                                        "type": "string",
+                                        "example": "За неделю"
+                                    },
+                                    "count": {
+                                        "type": "integer",
+                                        "example": 87
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "last_30d": {
+                                "properties": {
+                                    "label": {
+                                        "type": "string",
+                                        "example": "За месяц"
+                                    },
+                                    "count": {
+                                        "type": "integer",
+                                        "example": 301
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "meta": {
+                        "properties": {
+                            "generated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Tickets",
+            "description": "Tickets"
+        }
+    ]
+}

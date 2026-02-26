@@ -136,14 +136,17 @@
       <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/temporary-directory" />
       <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/laravel-package-tools" />
       <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/laravel-permission" />
-      <path value="$PROJECT_DIR$/laravel-app/vendor/phpstan/phpstan" />
-      <path value="$PROJECT_DIR$/laravel-app/vendor/iamcal/sql-parser" />
-      <path value="$PROJECT_DIR$/laravel-app/vendor/nunomaduro/larastan" />
       <path value="$PROJECT_DIR$/laravel-app/vendor/laravel/breeze" />
       <path value="$PROJECT_DIR$/vendor/_laravel_idea" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/swagger-api/swagger-ui" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/symfony/type-info" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/radebatz/type-info-extras" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/darkaonline/l5-swagger" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/phpstan/phpdoc-parser" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/zircote/swagger-php" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="8.2">
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.4">
     <option name="suggestChangeDefaultLanguageLevel" value="false" />
   </component>
   <component name="PhpStan">

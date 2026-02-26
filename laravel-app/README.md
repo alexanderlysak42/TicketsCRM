@@ -1,59 +1,329 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Tickets CRM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## Стек
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Laravel (backend)
+- PostgreSQL
+- Nginx
+- Adminer
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Docker
 
-## Learning Laravel
+### 1) Запуск контейнеров
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+docker compose up -d --build
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Контейнеры из `docker-compose.yml`:
 
-## Laravel Sponsors
+- `tickets-crm-app` — PHP/Laravel
+- `tickets-crm-nginx` — Nginx
+- `tickets-crm-db` — Postgres 16
+- `tickets-crm-adminer` — Adminer
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2) Установка зависимостей
 
-### Premium Partners
+```bash
+docker exec -it tickets-crm-app composer install
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 3) Настройка окружения
 
-## Contributing
+Скопировать `.env`:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+cp laravel-app/.env.example laravel-app/.env
+```
 
-## Code of Conduct
+> `.env.example` если уже указаны значения БД — они должны совпадать с параметрами из `docker-compose.yml`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4) Ключ приложения
 
-## Security Vulnerabilities
+```bash
+docker exec -it tickets-crm-app php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 5) Миграции и тестовые данные
 
-## License
+```bash
+docker exec -it tickets-crm-app php artisan migrate --seed
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 6) Storage symlink
+
+```bash
+docker exec -it tickets-crm-app php artisan storage:link
+```
+
+### 7) Laravel Breeze
+
+```bash
+docker exec -it tickets-crm-app npm install
+```
+
+```bash
+docker exec -it tickets-crm-app npm run build
+```
+
+### 8) Swagger UI
+
+```bash
+docker exec -it tickets-crm-app mkdir -p public/vendor/swagger-api/swagger-ui
+```
+
+```bash
+docker exec -it tickets-crm-app ln -s ../../../../vendor/swagger-api/swagger-ui/dist public/vendor/swagger-api/swagger-ui/dist
+```
+
+```bash
+docker exec -it tickets-crm-app php artisan l5-swagger:generate
+```
+
+---
+
+## URL
+
+- Приложение: `http://localhost:8080`
+- Виджет: `http://localhost:8080/widget`
+- Manager UI:
+  - `http://localhost:8080/dashboard`
+  - `http://localhost:8080/manager/tickets`
+- Adminer: `http://localhost:8081`
+
+---
+
+## Подключение к Postgres
+
+Параметры из `docker-compose.yml`:
+
+- Host: `localhost`
+- Port: `5432`
+- Database: `tickets-crm`
+- User: `tickets-crm`
+- Password: `secret`
+
+---
+
+## Seeders
+
+При выполнении `php artisan migrate --seed` запускаются сидеры :
+
+### Роли
+
+- `admin`
+- `manager`
+
+### Пользователи
+
+Пароль у обоих: **`password`**
+
+- **Admin**
+  - email: `admin@example.com`
+  - password: `password`
+  - role: `admin`
+
+- **Manager**
+  - email: `manager@example.com`
+  - password: `password`
+  - role: `manager`
+
+> Доступ к manager-панели защищён middleware `manager`. Вход выполнен через стандартные auth-роуты Laravel (`/login`).
+
+### Customers / Tickets / Attachments
+
+- **Customers**: создаётся **30** клиентов (factory)
+- **Tickets**: для каждого клиента создаётся **1–4** тикета (random)
+- **Attachments**: для части тикетов создаются **0–3** вложения (seed text-файлы) и добавляются в media collection `attachments`
+
+---
+
+## Встраивание виджета (iframe)
+
+Виджет доступен по роуту:
+
+- `GET /widget`
+
+Пример вставки на любой сайт:
+
+```html
+<iframe
+  src="http://localhost:8080/widget"
+  title="Tickets Widget"
+  style="width: 380px; height: 520px; border: 0; border-radius: 12px; overflow: hidden;"
+  loading="lazy"
+></iframe>
+```
+
+> Если проект разворачивается не локально — заменить `http://localhost:8080` на домен.
+
+---
+
+## API
+
+Маршруты описаны в `routes/api.php`.
+
+Базовый URL :
+
+- `http://localhost:8080/api`
+
+### 1) Создать тикет из виджета
+
+**POST** `/api/tickets`
+
+#### Валидация (основные поля)
+
+Тело запроса (JSON или `multipart/form-data`):
+
+- `customer` (object, required)
+  - `customer.name` (string, 2..120, required)
+  - `customer.phone` (string, required) — формат: `+380501234567`  
+    regex: `^\+[1-9]\d{7,14}$`
+  - `customer.email` (email, optional, max 190)
+- `subject` (string, 3..190, required)
+- `message` (string, 3..5000, required)
+- `files` (array, optional, max 10)
+  - каждый файл: до **10MB**, MIME:
+    - `image/jpeg`
+    - `image/png`
+    - `application/pdf`
+    - `text/plain`
+
+**Ограничение:**  
+Нельзя отправлять больше **1 заявки в сутки** с одного телефона или email.
+
+#### Пример: JSON (без файлов)
+
+```bash
+curl -X POST "http://localhost:8080/api/tickets" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer": {
+      "name": "Alex",
+      "phone": "+380501234567",
+      "email": "alex@example.com"
+    },
+    "subject": "Проблема с оплатой",
+    "message": "Не проходит платёж, ошибка 500."
+  }'
+```
+
+#### Пример: multipart/form-data (с файлами)
+
+```bash
+curl -X POST "http://localhost:8080/api/tickets" \
+  -F 'customer[name]=Alex' \
+  -F 'customer[phone]=+380501234567' \
+  -F 'customer[email]=alex@example.com' \
+  -F 'subject=Проблема с оплатой' \
+  -F 'message=Не проходит платёж, ошибка 500.' \
+  -F 'files[]=@./example.png' \
+  -F 'files[]=@./example.pdf'
+```
+
+#### Успешный ответ (200)
+
+```json
+{
+  "status": "ok",
+  "message": "Feedback is sent",
+  "data": {
+    "id": 123,
+    "...": "TicketResource"
+  }
+}
+```
+
+#### Ошибка валидации (422)
+
+Пример (неправильный телефон):
+
+```json
+{
+  "message": "The customer.phone field format is invalid.",
+  "errors": {
+    "customer.phone": [
+      "Phone format must be +380501234567"
+    ]
+  }
+}
+```
+
+Пример (лимит 1 заявка в сутки):
+
+```json
+{
+  "message": "The given data was invalid.",
+  "errors": {
+    "customer.phone": [
+      "Можно отправлять не более одной заявки в сутки с одного телефона или email."
+    ]
+  }
+}
+```
+
+---
+
+### 2) Статистика по тикетам
+
+**GET** `/api/tickets/statistics`
+
+Возвращает количество созданных тикетов за периоды:
+
+- `last_24h`
+- `last_7d`
+- `last_30d`
+
+#### Пример
+
+```bash
+curl "http://localhost:8080/api/tickets/statistics"
+```
+
+#### Ответ (200)
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "last_24h": 3,
+    "last_7d": 25,
+    "last_30d": 120
+  }
+}
+```
+
+---
+
+## Manager UI (веб-интерфейс)
+
+Маршруты описаны в `routes/web.php`:
+
+- `GET /dashboard` — список тикетов (middleware: `auth`, `manager`)
+- `GET /manager/tickets` — список тикетов
+- `GET /manager/tickets/{ticket}` — просмотр тикета
+- `PATCH /manager/tickets/{ticket}/status` — смена статуса (`new`, `in_progress`, `done`)
+
+### Фильтры списка
+
+В списке тикетов используются фильтры из query string:
+
+- `date_from`
+- `date_to`
+- `status`
+- `email`
+- `phone`
+
+---
+
+## Команды
+
+```bash
+
+# повторно прогнать миграции/сидеры (осторожно: удаляет данные)
+docker exec -it tickets-crm-app php artisan migrate:fresh --seed
+```
