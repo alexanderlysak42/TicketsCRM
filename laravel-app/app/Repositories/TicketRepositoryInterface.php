@@ -2,7 +2,4 @@
 
 namespace App\Repositories;
 
-interface TicketRepositoryInterface
-{
-
-}
+interface TicketRepositoryInterface {}

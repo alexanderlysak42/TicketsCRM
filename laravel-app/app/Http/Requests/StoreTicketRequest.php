@@ -6,9 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTicketRequest extends FormRequest
 {
-    /**
-     * @return bool
-     */
     public function authorize(): bool
     {
         return true;
@@ -33,7 +30,6 @@ class StoreTicketRequest extends FormRequest
             'subject' => ['required', 'string', 'min:3', 'max:190'],
             'message' => ['required', 'string', 'min:3', 'max:5000'],
 
-
             'files' => ['nullable', 'array', 'max:10'],
             'files.*' => [
                 'file',
@@ -49,14 +45,11 @@ class StoreTicketRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'customer.phone.regex' =>
-                'Телефон должен быть в международном формате, например +380501234567',
+            'customer.phone.regex' => 'Phone format must be +380501234567',
 
-            'files.max' =>
-                'Можно загрузить не более 10 файлов',
+            'files.max' => 'Max 10 files',
 
-            'files.*.max' =>
-                'Размер файла не должен превышать 10 МБ',
+            'files.*.max' => 'Nax file size is 10MB',
         ];
     }
 

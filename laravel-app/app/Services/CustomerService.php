@@ -9,16 +9,11 @@ use Throwable;
 
 readonly class CustomerService
 {
-    /**
-     * @param CustomerRepositoryInterface $customers
-     */
     public function __construct(
         private CustomerRepositoryInterface $customers,
     ) {}
 
     /**
-     * @param array $payload
-     * @return Customer
      * @throws Throwable
      */
     public function firstOrCreateByPhone(array $payload): Customer

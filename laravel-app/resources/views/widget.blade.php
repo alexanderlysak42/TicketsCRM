@@ -6,6 +6,7 @@
 
     <title>Feedback</title>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
         :root {
@@ -66,12 +67,6 @@
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
 
-        .help {
-            margin-top: 6px;
-            font-size: 12px;
-            color: var(--muted);
-        }
-
         .btn {
             display: inline-flex;
             align-items: center;
@@ -90,6 +85,13 @@
         .btn:hover { background: var(--btnHover); }
         .btn:disabled { opacity: .65; cursor: not-allowed; }
 
+        .help {
+            margin-top: 6px;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: .2px;
+        }
+
         .msg {
             display: none;
             margin-top: 12px;
@@ -99,8 +101,8 @@
             font-size: 13px;
             line-height: 1.35;
         }
-        .msg.ok { display:block; border-color: rgba(32,201,151,.35); background: rgba(32,201,151,.10); }
-        .msg.err { display:block; border-color: rgba(255,77,79,.35); background: rgba(255,77,79,.08); }
+        .msg.ok { display:none; border-color: rgba(32,201,151,.35); background: rgba(32,201,151,.10); }
+        .msg.err { display:none; border-color: rgba(255,77,79,.35); background: rgba(255,77,79,.08); }
 
         .errors {
             margin: 10px 0 0;
@@ -121,25 +123,27 @@
 <body>
 <div class="wrap">
     <div class="card">
-        <h1>Связаться с нами</h1>
-        <p class="sub">Заполните форму — менеджер ответит вам как можно скорее. Можно прикрепить файлы.</p>
+        <h1>Send feedback</h1>
+        <p class="sub">Send feedback for manager</p>
 
         <form id="ticketForm" enctype="multipart/form-data" novalidate>
+            @csrf
+
             <div class="row">
                 <div>
                     <label for="customer_name">Name</label>
-                    <input id="customer_name" name="customer_name" type="text" placeholder="Customer name" required>
+                    <input id="customer_name" name="customer[name]" type="text" placeholder="Customer name" required>
                 </div>
                 <div>
                     <label for="customer_phone">Phone number</label>
-                    <input id="customer_phone" name="customer_phone" type="tel" placeholder="+380XXXXXXXXX" required>
+                    <input id="customer_phone" name="customer[phone]" type="tel" placeholder="+380XXXXXXXXX" required>
                 </div>
             </div>
 
             <div class="row">
                 <div>
                     <label for="customer_email">Email</label>
-                    <input id="customer_email" name="customer_email" type="email" placeholder="Email">
+                    <input id="customer_email" name="customer[email]" type="email" placeholder="Email">
                 </div>
                 <div>
                     <label for="subject">Subject</label>
@@ -151,15 +155,18 @@
             <textarea id="message" name="message" placeholder="Message text..." required></textarea>
 
             <label for="files">Files</label>
-            <input id="files" name="files[]" type="file" multiple>
+            <input id="files" name="files[]" type="file" multiple accept=".jpg,.jpeg,.png,.pdf,.txt">
+            <div class="help">
+                JPG, PNG, PDF, TXT, max 10 files, less than 10 MB
+            </div>
 
             <button class="btn" type="submit" id="submitBtn">
                 <span id="btnText">Submit</span>
                 <span id="spinner" style="display:none;">⏳</span>
             </button>
 
-            <div id="successBox" class="msg ok"></div>
-            <div id="errorBox" class="msg err"></div>
+            <div id="successMessageWrapper" class="msg ok"></div>
+            <div id="errorMessageWrapper" class="msg err"></div>
         </form>
 
         <div class="foot">Iframe Widget</div>
@@ -172,8 +179,8 @@
         const btn = document.getElementById('submitBtn');
         const btnText = document.getElementById('btnText');
         const spinner = document.getElementById('spinner');
-        const successBox = document.getElementById('successBox');
-        const errorBox = document.getElementById('errorBox');
+        const successMessageWrapper = document.getElementById('successMessageWrapper');
+        const errorMessageWrapper = document.getElementById('errorMessageWrapper');
 
         function setLoading(isLoading) {
             btn.disabled = isLoading;
@@ -182,11 +189,10 @@
         }
 
         function showSuccess(message) {
-            successBox.textContent = message;
-            errorBox.className = 'msg err';
-            errorBox.style.display = 'none';
-            successBox.className = 'msg ok';
-            successBox.style.display = 'block';
+            successMessageWrapper.textContent = message;
+            errorMessageWrapper.style.display = 'none';
+            successMessageWrapper.style.display = 'block';
+            successMessageWrapper.className = 'msg ok';
         }
 
         function showErrors(title, errors) {
@@ -194,12 +200,11 @@
             if (errors && errors.length) {
                 html += `<ul class="errors">${errors.map(e => `<li>${escapeHtml(e)}</li>`).join('')}</ul>`;
             }
-            errorBox.innerHTML = html;
+            errorMessageWrapper.innerHTML = html;
 
-            successBox.className = 'msg ok';
-            successBox.style.display = 'none';
-            errorBox.className = 'msg err';
-            errorBox.style.display = 'block';
+            successMessageWrapper.style.display = 'none';
+            errorMessageWrapper.style.display = 'block';
+            errorMessageWrapper.className = 'msg err';
         }
 
         function escapeHtml(str) {
@@ -214,45 +219,46 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            successBox.style.display = 'none';
-            errorBox.style.display = 'none';
+            successMessageWrapper.style.display = 'none';
+            errorMessageWrapper.style.display = 'none';
 
             const formData = new FormData(form);
 
             setLoading(true);
             try {
+                const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+
                 const res = await fetch('/api/tickets', {
                     method: 'POST',
                     body: formData,
                     headers: {
                         'Accept': 'application/json',
-                    }
+                        ...(csrf ? { 'X-CSRF-TOKEN': csrf } : {}),
+                    },
                 });
 
                 const data = await res.json().catch(() => ({}));
 
                 if (res.ok) {
-                    showSuccess('Заявка отправлена! Спасибо. Мы свяжемся с вами.');
+                    showSuccess('Feedback is sent');
                     form.reset();
                     return;
                 }
 
-                // Laravel validation 422
                 if (res.status === 422 && data && data.errors) {
                     const list = [];
                     Object.keys(data.errors).forEach((k) => {
                         (data.errors[k] || []).forEach((msg) => list.push(msg));
                     });
-                    showErrors('Проверьте форму:', list);
+                    showErrors('Error:', list);
                     return;
                 }
 
-                // Other errors
-                showErrors('Не удалось отправить заявку.', [
-                    data.message ? data.message : 'Попробуйте ещё раз чуть позже.'
+                showErrors('Request error.', [
+                    data.message ? data.message : 'Send feedback again please'
                 ]);
             } catch (err) {
-                showErrors('Ошибка сети.', ['Не удалось подключиться к серверу.']);
+                showErrors('Request error.', ['Network error']);
             } finally {
                 setLoading(false);
             }

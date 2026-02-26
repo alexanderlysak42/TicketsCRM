@@ -31,22 +31,17 @@ class Customer extends Model
     protected function casts(): array
     {
         return [
-            'id'         => 'integer',
-            'name'       => 'string',
-            'phone'      => 'string',
-            'email'      => 'string',
+            'id' => 'integer',
+            'name' => 'string',
+            'phone' => 'string',
+            'email' => 'string',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
     }
 
-    /**
-     * @return HasMany
-     */
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
     }
-
-
 }

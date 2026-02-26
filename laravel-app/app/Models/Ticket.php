@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\TicketStatusesEnum;
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,7 +27,7 @@ class Ticket extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'status'      => TicketStatusesEnum::class,
+            'status' => TicketStatusesEnum::class,
             'answered_at' => 'datetime',
         ];
     }
@@ -38,5 +40,15 @@ class Ticket extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('attachments');
+    }
+
+    public function scopeCreatedSince(Builder $query, CarbonInterface $since): Builder
+    {
+        return $query->where('created_at', '>=', $since);
+    }
+
+    public function scopeCreatedBetween(Builder $query, CarbonInterface $from, CarbonInterface $to): Builder
+    {
+        return $query->whereBetween('created_at', [$from, $to]);
     }
 }

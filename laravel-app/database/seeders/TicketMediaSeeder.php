@@ -11,6 +11,7 @@ class TicketMediaSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
      * @throws RandomException
      */
     public function run(): void
@@ -18,11 +19,13 @@ class TicketMediaSeeder extends Seeder
         Ticket::query()->chunk(100, function ($tickets) {
             foreach ($tickets as $ticket) {
                 $count = random_int(0, 3);
-                if ($count === 0) continue;
+                if ($count === 0) {
+                    continue;
+                }
 
                 for ($i = 0; $i < $count; $i++) {
                     $content = "Seed attachment for ticket #{$ticket->id}\n";
-                    $fileName = 'ticket-' . $ticket->id . '-' . Str::random(8) . '.txt';
+                    $fileName = 'ticket-'.$ticket->id.'-'.Str::random(8).'.txt';
 
                     $ticket
                         ->addMediaFromString($content)

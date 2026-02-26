@@ -136,10 +136,18 @@
       <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/temporary-directory" />
       <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/laravel-package-tools" />
       <path value="$PROJECT_DIR$/laravel-app/vendor/spatie/laravel-permission" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/phpstan/phpstan" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/iamcal/sql-parser" />
+      <path value="$PROJECT_DIR$/laravel-app/vendor/nunomaduro/larastan" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">
     <option name="suggestChangeDefaultLanguageLevel" value="false" />
+  </component>
+  <component name="PhpStan">
+    <PhpStan_settings>
+      <PhpStanConfiguration tool_path="$PROJECT_DIR$/laravel-app/vendor/bin/phpstan" />
+    </PhpStan_settings>
   </component>
   <component name="PhpStanOptionsConfiguration">
     <option name="transferred" value="true" />

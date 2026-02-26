@@ -11,10 +11,10 @@ class CustomerFactory extends Factory
 
     public function definition(): array
     {
-        $uaPhone = '+380' . fake()->numberBetween(500000000, 999999999);
+        $uaPhone = '+380'.fake()->numberBetween(500000000, 999999999);
 
         return [
-            'name'  => fake()->name(),
+            'name' => fake()->name(),
             'phone' => $uaPhone,
             'email' => fake()->optional(0.8, null)->passthrough(fake()->unique()->safeEmail()),
         ];

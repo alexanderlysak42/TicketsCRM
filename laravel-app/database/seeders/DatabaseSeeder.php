@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             CustomersSeeder::class,
             TicketsSeeder::class,
-            TicketMediaSeeder::class
+            TicketMediaSeeder::class,
         ]);
     }
 }

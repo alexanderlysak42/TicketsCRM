@@ -15,10 +15,6 @@ readonly class UserService
     ) {}
 
     /**
-     * @param string $name
-     * @param string $email
-     * @param string $password
-     * @return User
      * @throws Throwable
      */
     public function createManager(string $name, string $email, string $password): User
@@ -37,10 +33,6 @@ readonly class UserService
     }
 
     /**
-     * @param string $name
-     * @param string $email
-     * @param string $password
-     * @return User
      * @throws Throwable
      */
     public function createAdmin(string $name, string $email, string $password): User

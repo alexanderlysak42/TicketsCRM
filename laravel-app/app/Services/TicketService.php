@@ -17,9 +17,6 @@ readonly class TicketService
     ) {}
 
     /**
-     * @param array $payload
-     * @param array $files
-     * @return Ticket
      * @throws Throwable
      */
     public function createFromWidget(array $payload, array $files = []): Ticket
@@ -45,10 +42,6 @@ readonly class TicketService
         });
     }
 
-    /**
-     * @param Ticket $ticket
-     * @return Ticket
-     */
     public function markInProgress(Ticket $ticket): Ticket
     {
         return $this->tickets->update($ticket, [
@@ -57,10 +50,6 @@ readonly class TicketService
         ]);
     }
 
-    /**
-     * @param Ticket $ticket
-     * @return Ticket
-     */
     public function markDone(Ticket $ticket): Ticket
     {
         return $this->tickets->update($ticket, [

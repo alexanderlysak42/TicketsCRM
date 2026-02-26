@@ -26,9 +26,9 @@ class TicketFactory extends Factory
 
         return [
             'customer_id' => Customer::factory(),
-            'subject'     => fake()->sentence(6),
-            'message'     => fake()->paragraphs(2, true),
-            'status'      => $status,
+            'subject' => fake()->sentence(6),
+            'message' => fake()->paragraphs(2, true),
+            'status' => $status,
             'answered_at' => $status === TicketStatusesEnum::DONE
                 ? fake()->dateTimeBetween('-30 days', 'now')
                 : null,

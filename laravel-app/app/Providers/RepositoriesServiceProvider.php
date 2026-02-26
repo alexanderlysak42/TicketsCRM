@@ -2,13 +2,12 @@
 
 namespace App\Providers;
 
-use App\Repositories\UserRepositoryInterface;
-use App\Repositories\CustomerRepositoryInterface;
-use App\Repositories\TicketRepositoryInterface;
-
-use App\Repositories\UserRepository;
 use App\Repositories\CustomerRepository;
+use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\TicketRepository;
+use App\Repositories\TicketRepositoryInterface;
+use App\Repositories\UserRepository;
+use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoriesServiceProvider extends ServiceProvider
