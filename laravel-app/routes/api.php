@@ -3,4 +3,4 @@
 use Illuminate\Support\Facades\Route;
 
 
-Route::post('/tickets', [TicketController::class, 'store']);
+//Route::post('/tickets', [TicketController::class, 'store']);

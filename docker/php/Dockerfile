@@ -14,7 +14,8 @@ RUN apk add --no-cache \
     libpng-dev \
     jpeg-dev \
     freetype-dev \
-    postgresql-dev
+    postgresql-dev \
+    $PHPIZE_DEPS
 
 # PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -26,10 +27,13 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     gd \
     exif
 
+# ✅ Redis (phpredis)
+RUN pecl install redis \
+ && docker-php-ext-enable redis
+
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Optional: create non-root user
 RUN addgroup -g 1000 www \
  && adduser -G www -g www -s /bin/sh -D -u 1000 www
 
