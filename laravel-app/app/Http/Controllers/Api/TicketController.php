@@ -23,7 +23,7 @@ class TicketController extends Controller
      */
     public function store(StoreTicketRequest $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         $payload = $request->payload();
         $files = $request->file('files', []);
 
@@ -33,7 +33,7 @@ class TicketController extends Controller
         );
 
         return response()->json([
-            'status'  => 'ok',
+            'status' => 'ok',
             'message' => 'Feedback is sent',
             'data' => new TicketResource($ticket),
         ]);
@@ -46,7 +46,7 @@ class TicketController extends Controller
 
         $data = [
             'last_24h' => Ticket::createdSince($now->copy()->subDay())->count(),
-            'last_7d'  => Ticket::createdSince($now->copy()->subDays(7))->count(),
+            'last_7d' => Ticket::createdSince($now->copy()->subDays(7))->count(),
             'last_30d' => Ticket::createdSince($now->copy()->subDays(30))->count(),
         ];
 
@@ -55,5 +55,4 @@ class TicketController extends Controller
             'data' => new TicketStatisticsResource($data),
         ]);
     }
-
 }

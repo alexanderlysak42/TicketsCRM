@@ -14,6 +14,8 @@ RUN apk add --no-cache \
     libpng-dev \
     jpeg-dev \
     freetype-dev \
+    nodejs \
+    npm \
     postgresql-dev \
     $PHPIZE_DEPS
 

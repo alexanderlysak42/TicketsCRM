@@ -51,4 +51,14 @@ class Ticket extends Model implements HasMedia
     {
         return $query->whereBetween('created_at', [$from, $to]);
     }
+
+    public function scopeFilter(Builder $q, array $filters): Builder
+    {
+        return $q
+            ->when($filters['status'] ?? null, fn ($qq, $v) => $qq->where('status', $v))
+            ->when($filters['email'] ?? null, fn ($qq, $v) => $qq->whereHas('customer', fn ($c) => $c->where('email', 'ilike', "%{$v}%")))
+            ->when($filters['phone'] ?? null, fn ($qq, $v) => $qq->whereHas('customer', fn ($c) => $c->where('phone', 'ilike', "%{$v}%")))
+            ->when($filters['date_from'] ?? null, fn ($qq, $v) => $qq->whereDate('created_at', '>=', $v))
+            ->when($filters['date_to'] ?? null, fn ($qq, $v) => $qq->whereDate('created_at', '<=', $v));
+    }
 }

@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Ticket;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreTicketRequest extends FormRequest
 {
@@ -39,6 +42,37 @@ class StoreTicketRequest extends FormRequest
         ];
     }
 
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            if ($validator->errors()->isNotEmpty()) {
+                return;
+            }
+
+            $phone = (string) data_get($this->input(), 'customer.phone');
+            $email = data_get($this->input(), 'customer.email');
+
+            $start = Carbon::now()->startOfDay();
+            $end = Carbon::now()->endOfDay();
+
+            $exists = Ticket::query()
+                ->whereBetween('created_at', [$start, $end])
+                ->whereHas('customer', function ($q) use ($phone, $email) {
+                    $q->where('phone', $phone);
+
+                    if (! empty($email)) {
+                        $q->orWhere('email', $email);
+                    }
+                })
+                ->exists();
+
+            if ($exists) {
+                $msg = 'Можно отправлять не более одной заявки в сутки с одного телефона или email.';
+                $validator->errors()->add('customer.phone', $msg);
+            }
+        });
+    }
+
     /**
      * @return string[]
      */
@@ -53,9 +87,6 @@ class StoreTicketRequest extends FormRequest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function payload(): array
     {
         return $this->validated();
